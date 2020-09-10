@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userprofile-deployment
+  labels:
+    app: userprofile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userprofile
+  template:
+    metadata:
+      labels:
+        app: userprofile
+    spec:
+      containers:
+      - name: userprofile
+        image: registrykme9469.azurecr.io/tripinsights/userprofile:1.0
+        ports:
+        - containerPort: 80
+          protocol: TCP
+          name: http
+        - containerPort: 443
+          protocol: TCP
+          name: https
+        env:
+          - name: SQL_PASSWORD
+            value: "Password@123"
+          - name: SQL_SERVER
+            value: "sqlserverkme9469.database.windows.net"
+          - name: SQL_USER
+            value: "sqladminkMe9469"
+          - name: SQL_DBNAME
+            value: "mydrivingDB"
+          - name: ASPNETCORE_ENVIRONMENT
+            value: "Local"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: userprofile
+spec:
+  selector:
+    app: userprofile
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+    - port: 443
+      targetPort: 443
+      protocol: TCP
+      name: https

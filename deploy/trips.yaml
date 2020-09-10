@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trips-deployment
+  labels:
+    app: trips
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trips
+  template:
+    metadata:
+      labels:
+        app: trips
+    spec:
+      containers:
+      - name: trips
+        image: registrykme9469.azurecr.io/tripinsights/trips:1.0
+        ports:
+        - containerPort: 80
+          protocol: TCP
+          name: http
+        - containerPort: 443
+          protocol: TCP
+          name: https
+        env:
+          - name: SQL_PASSWORD
+            value: "Password@123"
+          - name: SQL_SERVER
+            value: "sqlserverkme9469.database.windows.net"
+          - name: SQL_USER
+            value: "sqladminkMe9469"
+          - name: SQL_DBNAME
+            value: "mydrivingDB"
+          - name: ASPNETCORE_ENVIRONMENT
+            value: "Local"
+          - name: OPENAPI_DOCS_URI
+            value: ""
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trips
+spec:
+  selector:
+    app: trips
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+    - port: 443
+      targetPort: 443
+      protocol: TCP
+      name: https

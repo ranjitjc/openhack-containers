@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poi-deployment
+  labels:
+    app: poi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: poi
+  template:
+    metadata:
+      labels:
+        app: poi
+    spec:
+      containers:
+      - name: poi
+        image: registrykme9469.azurecr.io/tripinsights/poi:1.0
+        ports:
+        - containerPort: 80
+          protocol: TCP
+          name: http
+        - containerPort: 443
+          protocol: TCP
+          name: https
+        env:
+          - name: SQL_PASSWORD
+            value: "Password@123"
+          - name: SQL_SERVER
+            value: "database"
+          - name: SQL_USER
+            value: "sa"
+          - name: SQL_DBNAME
+            value: "mydrivingDB"
+          - name: ASPNETCORE_ENVIRONMENT
+            value: "Local"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: poi
+spec:
+  selector:
+    app: poi
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+    - port: 443
+      targetPort: 443
+      protocol: TCP
+      name: https
