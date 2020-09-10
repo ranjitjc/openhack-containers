@@ -115,6 +115,12 @@ Creating a role assignment under the scope of "/subscriptions/c33ec5ff-f1e4-402b
 
 >az aks update -n openHackAKSCluster -g OpenHack-team12-RG --attach-acr registrykme9469.azurecr.io
 
+## Kubernetes
+
+### <https://www.stratoscale.com/blog/kubernetes/kubernetes-exposing-pods-service/>
+
+
+
 ***
 
 > ## References
